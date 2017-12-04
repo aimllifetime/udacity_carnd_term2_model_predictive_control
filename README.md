@@ -21,14 +21,29 @@ v: The current velocity of car in mph
 cte: the cross track error
 epsi: the error orentation compared to ideal situation.
 
-In the main.cpp, upon every websocket message, the car position and waypoints are extracted from the message. Then subtract the car position[px, py] from the waypoint so that move the co-ordinate origin to car position. Then rotates the system by the current car orientation in psi so that in new co-ordinates, ideal car orentation is along the x-axis such that the CTE simply becomes the y-axis offset and counter-clock orentatioin is negative PSI(left turn) and clock-wise orentation PSI(right turn).
+In the main.cpp, upon every websocket message, the car position and waypoints are extracted from the message. Then subtract the car position[px, py] from the waypoint so that move the co-ordinate origin to car position. Then rotates the system by the current car orientation in psi so that in new co-ordinates, ideal desired car orentation is along the x-axis such that the CTE simply becomes the y-axis offset and counter-clock orentatioin is negative PSI(left turn) and clock-wise orentation PSI(right turn).
 
 Here is the pusduo code:
-  foreach waypoint in waypoints:
-     waypoint_x_offset = waypoint[px] - car[px]
-     waypoint_y_offset = waypoint[py] - car[py]
-     
+
+* Step 1: co-ordinate translation
      // do the clock wise PSI rotation
-     waypoint[px] = waypoint_x_offset * cos(0-psi) - waypoint_y_offset*sin(0-psi))
-     waypoint[py] = waypoint_x_offset * sin(0-psi) + waypoint_y_offset*cos(0-psi))
-  
+     foreach waypoint in waypoints{
+       waypoint_x_offset = waypoint[px] - car[px]
+       waypoint_y_offset = waypoint[py] - car[py]
+       waypoint[px] = waypoint_x_offset * cos(0-psi) - waypoint_y_offset*sin(0-psi))
+       waypoint[py] = waypoint_x_offset * sin(0-psi) + waypoint_y_offset*cos(0-psi))
+     }
+* Step 2: Polyfit the waypoints to find the coeffs
+   Simply call the polyfit witht the waypoints from step1 to fit them into polynomial of order of 3.
+   
+* Step 3: Calcuate the CTE and epsi
+   The CTE becomes straightforward by simply apply the polyeval at origin of zero where car is positioned, i.e. polyeval(coeffs, 0)
+   The epsi, error orentation is the angle of atan of first derivative of the polynomial at car position, i.e. new origion.
+   first derivative(fd1) = coeffs[1] + 2 * px * coeffs[2] + 3 * coeffs * px * px
+   since px in new coordinate is of zero, above becomes: fd1 = coeffs[1]
+   so the error orentation is epsi = psi - atan(coeffs[1]) = - atan(coeff[1] since PSI desired is of zero to drive along x-axis.
+   
+* step 4: calcuate the steering angle and throttle using the MPC, such as
+      vars = mpc.Solve(state, coeffs)
+      
+* step 5: normalize the angle to  [ -25, 25] in radias and display the waypoints and projected path to simulator.
