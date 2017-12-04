@@ -46,4 +46,18 @@ Here is the pusduo code:
 * step 4: calcuate the steering angle and throttle using the MPC, such as
       vars = mpc.Solve(state, coeffs)
       
-* step 5: normalize the angle to  [ -25, 25] in radias and display the waypoints and projected path to simulator.
+* step 5: normalize the angle to  [ -25, 25] in radias and display the waypoints and projected path to simulator. The actuator is normalized between [-1, 1] when MPC:Solve. no further action is needed.
+
+**FG_eval**: The model update constraint is govened by following fomula in Class FG_eval:
+
+* Cost fg[0] has the cost of various conditions:
+     1. CTE of N steps
+     2. epsi of N steps
+     3. speed offset to reference speed(100MPH in the final submission)
+     4. orentation error
+     5. actuation 
+     6. difference of current orentation and previous orentation error
+     7. difference of current actuation and previous actuation
+* model constraint update:
+
+
