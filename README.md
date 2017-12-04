@@ -26,6 +26,8 @@ In the main.cpp, upon every websocket message, the car position and waypoints ar
 Here is the pusduo code:
 
 * Step 1: co-ordinate translation
+
+     
      // do the clock wise PSI rotation
      foreach waypoint in waypoints{
        waypoint_x_offset = waypoint[px] - car[px]
@@ -33,6 +35,8 @@ Here is the pusduo code:
        waypoint[px] = waypoint_x_offset * cos(0-psi) - waypoint_y_offset*sin(0-psi))
        waypoint[py] = waypoint_x_offset * sin(0-psi) + waypoint_y_offset*cos(0-psi))
      }
+     
+     
 * Step 2: Polyfit the waypoints to find the coeffs
    Simply call the polyfit witht the waypoints from step1 to fit them into polynomial of order of 3.
    
