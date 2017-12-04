@@ -26,9 +26,9 @@ In the main.cpp, upon every websocket message, the car position and waypoints ar
 Here is the pusduo code:
 
 * Step 1: co-ordinate translation
-
-     
      // do the clock wise PSI rotation
+     
+     
      foreach waypoint in waypoints{
        waypoint_x_offset = waypoint[px] - car[px]
        waypoint_y_offset = waypoint[py] - car[py]
