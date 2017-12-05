@@ -80,11 +80,19 @@ Here is the pusduo code:
      a is between [-1, 1] for acuation.
 
 
-*** Timestep Length and Elapsed Duration (N & dt)
+### Timestep Length and Elapsed Duration (N & dt)
 In order to run speed at 100MPH, every second the travelled distance is about 100 * 1609m/3600s = 45meters.
 
 The waypoints given from simulator is almost a straight line, the euclian distance from the start to end is about 55m.
 
 42["telemetry",{"ptsx":[-32.16173,-43.49173,-61.09,-78.29172,-93.05002,-107.7717],"ptsy":[113.361,105.941,92.88499,78.73102,65.34102,50.57938],"psi_unity":4.12033,"psi":3.733651,"x":-40.62,"y":108.73,"steering_angle":0,"throttle":0,"speed":2.628028}]
 
-distance = 
+distance = ![distance](./output/distance.gif) = 55m
+
+so in order to predict the distance by waypoints, we need 55/44 = 1.25s
+
+so if we choose N = 10, then dt = 0.125. This is how I set the N and dt.
+
+or if choose bigger N such as 20, dt = 0.0625. However, the calculation of Jacob and Hassian matrix will take longer time and model is not able to catch up the incoming message processing.
+
+
