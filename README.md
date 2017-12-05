@@ -95,4 +95,19 @@ so if we choose N = 10, then dt = 0.125. This is how I set the N and dt.
 
 or if choose bigger N such as 20, dt = 0.0625. However, the calculation of Jacob and Hassian matrix will take longer time and model is not able to catch up the incoming message processing.
 
+### Polynomial Fitting and MPC Preprocessing
+This has been covered in above model implemenation. Step 1 does the preprocessing the waypoints to move the origin or coordinate to car system for the waypoints. Then does the rotation of the waypoints clock wise by PSI. After the rotation is done then use polyfit to fit the new waypoints.
+* Step 1: co-ordinate translation
+     // do the clock wise PSI rotation
+    ``` 
+     foreach waypoint in waypoints{
+       waypoint_x_offset = waypoint[px] - car[px]
+       waypoint_y_offset = waypoint[py] - car[py]
+       newwaypoint_x[px] = waypoint_x_offset * cos(0-psi) - waypoint_y_offset*sin(0-psi))
+       newwaypoint_y[py] = waypoint_x_offset * sin(0-psi) + waypoint_y_offset*cos(0-psi))
+     }
+     ```
+* Step 2: Polyfit the waypoints to find the coeffs
+   Simply call the polyfit witht the waypoints from step1 to fit them into polynomial of order of 3.
 
+The coeffs = polyfit(newwaypoint_x, newwaypoint_y, 3);
