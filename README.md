@@ -57,13 +57,15 @@ Here is the pusduo code:
 **FG_eval**: The model update constraint is govened by following fomula in Class FG_eval:
 
 * Cost fg[0] has the cost of various conditions:
-     1. CTE of N steps
-     2. epsi of N steps
-     3. speed offset to reference speed(100MPH in the final submission)
-     4. orentation error
-     5. actuation 
-     6. difference of current orentation and previous orentation error
-     7. difference of current actuation and previous actuation
+     1. CTE of N steps  * cte_weight
+     2. epsi of N steps * spsi_weight
+     3. speed offset to reference speed(100MPH in the final submission) * v_weight
+     4. orentation error * delta_weight
+     5. actuation  * a_weight
+     6. difference of current orentation and previous orentation error * diff_delta_weight
+     7. difference of current actuation and previous actuation * diff_a_weight
+     
+     The weights are discussed later in model tuning setion.
      
 * model state update formula:
 
@@ -79,7 +81,7 @@ Here is the pusduo code:
      
      ![epsi](./output/epsi.gif)
      
-     note the minus sign before ![d](./output/delta.gif) is different from class. the reason is because that note if δ is positive we rotate counter-clockwise, or turn left. In the simulator however, a positive value implies a right turn and a negative value implies a left turn. Due to this we switch the + sign to - sign.
+     note the minus sign before ![d](./output/delta.gif) is different from class content. the reason is because that note if δ is positive we rotate counter-clockwise, or turn left. In the simulator however, a positive value implies a right turn and a negative value implies a left turn. Due to this we switch the + sign to - sign.
      
 * Constraits
      delta is between [-25, 25] degree
@@ -116,4 +118,24 @@ This has been covered in above model implemenation. Step 1 does the preprocessin
 * Step 2: Polyfit the waypoints to find the coeffs
    Simply call the polyfit witht the waypoints from step1 to fit them into polynomial of order of 3.
 
-The coeffs = polyfit(newwaypoint_x, newwaypoint_y, 3);
+ ``` 
+    coeffs = polyfit(newwaypoint_x, newwaypoint_y, 3);
+ ```
+
+
+### Model Predictive Control with Latency
+Since the simulation model needs 100ms to emulate the acuation latency, so once the model received Json message which means the acuation is done and car is in new state.  the MPC needs to calculate the next new state and PSI and delta using MPC. This calculation time depends on machine and algorithm on how many N and dt. in order to acurately decide how much time was spent in the MPC calculation, use the following psudo code to get time elapse of MPC:
+
+```
+     time_t start, end;
+     start = time(NULL);
+     ... doing all MPC calculation.
+     end = time(NULL);
+     time_diff = (end - start) * 1000;
+     latency = (time_diff > 100 ) ? 100 : int(100 - time_diff);
+```
+
+### model tuning
+
+* weight tuning
+
