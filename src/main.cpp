@@ -4,6 +4,7 @@
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <time.h>
 #include "Eigen-3.3/Eigen/Core"
 #include "Eigen-3.3/Eigen/QR"
 #include "MPC.h"
@@ -76,6 +77,12 @@ int main() {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
+
+    // timestamp to calculate the tim spend in MPC
+    time_t start, end;
+
+    start = time(NULL);
+
     string sdata = string(data).substr(0, length);
     cout << sdata << endl;
     if (sdata.size() > 2 && sdata[0] == '4' && sdata[1] == '2') {
@@ -125,8 +132,8 @@ int main() {
           * Both are in between [-1, 1].
           */
 
-          double steer_value = j[1]["steering_angle"];
-          double throttle_value = j[1]["throttle"];
+          //double steer_value = j[1]["steering_angle"];
+          //double throttle_value = j[1]["throttle"];
 
           // state(6): px, py, psi, v, cte, epsi
           Eigen::VectorXd state(6);
@@ -187,7 +194,11 @@ int main() {
           //
           // NOTE: REMEMBER TO SET THIS TO 100 MILLISECONDS BEFORE
           // SUBMITTING.
-          this_thread::sleep_for(chrono::milliseconds(100));
+          end = time(NULL);
+          double time_diff = (end - start) * 1000;
+          cout << "MPC time calculation " << time_diff << " in ms" << endl;
+          int latency = (int(time_diff)  > 100 ) ? 0 : 100 - int(time_diff);
+          this_thread::sleep_for(chrono::milliseconds(latency));
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }
       } else {

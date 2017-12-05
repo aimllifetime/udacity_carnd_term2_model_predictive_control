@@ -68,6 +68,8 @@ class FG_eval {
     // Minimize the value gap between sequential actuations.
     for (int t = 0; t < N - 2; t++) {
       fg[0] += 100*CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
+      // add bit more weight on the Acceleration so that speed change is not dramatic.
+      // during turn, the projectory path can go wierd if this does not have enough weight due to sharp turn.
       fg[0] += 200*CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
     }
 
