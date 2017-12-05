@@ -64,6 +64,19 @@ Here is the pusduo code:
      5. actuation 
      6. difference of current orentation and previous orentation error
      7. difference of current actuation and previous actuation
-* model constraint update:
+     
+* model state update formula:
+     ![x](./output/x.gif)
+     ![y](./output/y.gif)
+     ![psi](./output/psi.gif)
+     ![v](./output/v.gif)
+     ![cte](./output/cte.gif)
+     ![epsi](./output/epsi.gif)
+     
+     note the minus sign before ![d](./output/vl.gif) is different from class. the reason is because that note if δ is positive we rotate counter-clockwise, or turn left. In the simulator however, a positive value implies a right turn and a negative value implies a left turn. Due to this we switch the + sign to - sign.
+     
+* Constraits
+     delta is between [-25, 25] degree
+     a is between [-1, 1] for acuation.
 
 
