@@ -143,6 +143,7 @@ Thread sleeps remaining ms before sending new data to simulator. if calculation 
 
 * weight tuning
 initially have following weights for the cost calculation:
+```
 cte_weight = 2000
 epsi_weight = 2000
 v_weight = 1
@@ -150,7 +151,7 @@ delta_weight = 5
 a_weight = 5
 diff_delta_weight = 200
 diff_a_weight = 10
-
+```
 this can get model to run around track for reference speed at 40MPH. However, when the reference speed increases, the car seems oscillate on orientation and gets off the track especially on the sharp turns. In order to keep the car on track, purposely increased the cte_weight = 4500 and epsi_weight = 3500 and delta_weight = 600. This can keep car on the track.
 
 However, during simulation run, there is some projected path seems wierd, please see the picture below.
@@ -158,6 +159,7 @@ However, during simulation run, there is some projected path seems wierd, please
 Thought this might be related to the quick speed change. In order to avoid this, add the penalty to the diff_a_weight to 200.
 
 so the final weights are used:
+```
 cte_weight = 4500
 epsi_weight = 3500
 v_weight = 1
@@ -165,4 +167,4 @@ delta_weight = 600
 a_weight = 2
 diff_delta_weight = 100
 diff_a_weight = 200
-
+```
