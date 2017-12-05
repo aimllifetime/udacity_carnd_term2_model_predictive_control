@@ -155,8 +155,11 @@ diff_a_weight = 10
 this can get model to run around track for reference speed at 40MPH. However, when the reference speed increases, the car seems oscillate on orientation and gets off the track especially on the sharp turns. In order to keep the car on track, purposely increased the cte_weight = 4500 and epsi_weight = 3500 and delta_weight = 600. This can keep car on the track.
 
 However, during simulation run, there is some projected path seems wierd, please see the picture below.
-![weird](./output/weird.jpg)
-Thought this might be related to the quick speed change. In order to avoid this, add the penalty to the diff_a_weight to 200.
+
+![weird](./output/weird.png)
+
+the short video record is: [weird_projected](./output/weird_projected.mov)
+Thought this might be related to the quick speed change. In order to avoid this, add the penalty to the diff_a_weight to 200 and the unexpected projected green line is gone.
 
 so the final weights are used:
 ```
