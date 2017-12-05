@@ -198,3 +198,6 @@ a_weight = 2
 diff_delta_weight = 100
 diff_a_weight = 200
 ```
+the working case:
+
+![working](./output/working.png)
