@@ -3,7 +3,7 @@ Self-Driving Car Engineer Nanodegree Program.
 
 Term2 final project: Model Predictive Control
 
-The achieved reference speed is 100MPH. The video record is here:[video](./output/record.mov)
+The achieved reference speed is 100MPH. The video record is here:[ **video** ](./output/record.mov)
 
 ## Basic Build Instructions
 
@@ -86,6 +86,33 @@ Here is the pusduo code:
 * Constraits
      delta is between [-25, 25] degree
      a is between [-1, 1] for acuation.
+
+### MPC Solver:
+n_vars = N * 6 + (N-1) * 2, where 6 is total states in vector, such as [px, py, psi, v, cte, epsi]. (N-1) * 2 is storing the delta and actuation variables.
+
+n_constraints = N * 6
+
+the vars is initiated by the state variable, such as:
+```
+  vars[x_start] = x;
+  vars[y_start] = y;
+  vars[psi_start] = psi;
+  vars[v_start] = v;
+  vars[cte_start] = cte;
+  vars[epsi_start] = epsi;
+```
+Then defines the constraints for all those variables  are non-actuators such as:
+vars_lowerbound = -1.0e19
+vars_upperbound = 1.0e19
+
+For the actuators delta, they are limited between -25 and 25 degree
+For the acceleration a, they are limited between [-1, 1].
+
+for the all constraint lower and upper are constrainted to zero except the indexed at x_start=initial value. where x denotes the index starting point for x, y, psi, v, cte, epsi.
+
+Sovler uses the FG_eval and above constraints evalute the solution.
+Once it is done, the orientation delta is put into result vector and then the acutator a. After that 10 projected points along path is returned too.
+
 
 
 ### Timestep Length and Elapsed Duration (N & dt)
